@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/******************************************************************************
+ * Class       : string.xml                                                   *
+ * Default string resource                                                    *
+ *                                                                            *
+ * Version     : v1.0                                                         *
+ * Date        : May 06, 2011                                                 *
+ * Copyright (c)-2011 DatNQ some right reserved                               *
+ * You can distribute, modify or what ever you want but WITHOUT ANY WARRANTY  *
+ * Be honest by keep credit of this file                                      *
+ *                                                                            *
+ * If you have any concern, feel free to contact with me via email, i will    *
+ * check email in free time                                                   * 
+ * Email: nguyendatnq@gmail.com                                               *
+ * ****************************************************************************
+ * Modification Logs:                                                         *
+ *   KEYCHANGE  DATE          AUTHOR   DESCRIPTION                            *
+ * ****************************************************************************
+ *    *******   May 06, 2011  DatNQ    Create new                             *
+ ******************************************************************************/
+  -->
+<resources>
+    <!-- MSG:00001 Application name -->
+    <string name="app_name">Yahoo Weather</string>
+    <string name="strSettingTitle">Weather Setting Screen</string>
+    <string name="strSettingLocationTitle">Set Weather Location</string>
+    
+    <!-- Activity weather setting -->
+    <string name="str_user_agreement">USER AGREEMENT:\nTo continue use this demo
+    application, you must agree with user agreement\n\nThis is demo product
+    use for my CV about Android Knowledge so you CAN distribute, 
+    modify or what ever you want but WITHOUT ANY WARRANTY\n\nFeel free
+    to contact with me via email about: bug, request feature, joint dev team
+    \n\nEmail: nguyendatnq@gmail.com</string>
+    <string name="str_agree">Agree</string>
+    <string name="str_disagree">Disagree</string>
+    
+    <!-- CV section -->
+    <string name="str_button_done">Done</string>
+    <string name="str_cv_at_startup">Show CV screen at startup</string>
+    <string name="str_author">Nguyen Quoc Dat CV</string>
+    <string name="str_full_name">Name: Nguyen Quoc Dat</string>
+    <string name="str_birthday">Birthday: 08-04-1985</string>
+    <string name="str_address">Address: Tu liem, Cau Giay district, Ha noi, Vietnam</string>
+    <string name="str_mobile">Mobile:\n(+84) 0975 719 947</string>
+    <string name="str_email">Email:\nnguyendatnq@gmail.com</string>
+    
+    <!-- Technical skill -->
+    <string name="str_technical">Technical Skill</string>
+    <string name="str_technical_outline">SUMMARY:\nHave 4 years experiment in 
+    mobile embedded system with full life-cycle project for Japan customer, 
+    strong skill in: \n+ Architecture Design \n+ Detail Design \n+ Coding and module test, detail as below:</string>
+    <string name="str_technical_android">Android: more than 1 years experiment</string>
+    <string name="str_technical_brew">Brew + Native C: 2.5 years experiment</string>
+    <string name="str_technical_flashlite">J2ME + Flashlite: 0.5 years experiment</string>
+    <string name="str_technical_letter">P/s:\nLetter to our employee Requirement :\nDear employee Requirement, 
+    \n\nThank for your time for my CV
+    i very interesting in develop for smartphone platform like Android, Iphone, Cross platform...
+    so feel free to contact me to share opportunity. \mthanks for your help
+    \n\nBest regards\nDatNQ</string>
+    
+    <!-- Option menu -->
+    <string name="option_menu_about">About me</string>
+    <string name="option_menu_setting">Set Location</string>
+    <string name="str_no_data">***</string>
+    
+    <string name="str_humidity">Humidity</string>
+    <string name="str_visi">Visibility</string>
+    
+    <string name="str_temperature_fmt">%s°C</string>
+    <string name="str_humidity_fmt">%s%%</string>
+    <string name="str_visi_fmt">%s mi</string>
+    <string name="strOnSearching">Please wait for searching...</string>
+    <string name="strFetchingData">Please wait fetching data...</string>
+    <string name="strFetchFailed">Please check, get failed :(</string>
+    <string name="strFetchSuccess">He he, get success</string>
+</resources>

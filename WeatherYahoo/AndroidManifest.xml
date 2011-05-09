@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/******************************************************************************
+ * Class       : AndroidManifest.xml                                          *
+ * Manifiest config                                                           *
+ *                                                                            *
+ * Version     : v1.0                                                         *
+ * Date        : May 06, 2011                                                 *
+ * Copyright (c)-2011 DatNQ some right reserved                               *
+ * You can distribute, modify or what ever you want but WITHOUT ANY WARRANTY  *
+ * Be honest by keep credit of this file                                      *
+ *                                                                            *
+ * If you have any concern, feel free to contact with me via email, i will    *
+ * check email in free time                                                   * 
+ * Email: nguyendatnq@gmail.com                                               *
+ * ****************************************************************************
+ * Modification Logs:                                                         *
+ *   KEYCHANGE  DATE          AUTHOR   DESCRIPTION                            *
+ * ****************************************************************************
+ *    *******   May 06, 2011  DatNQ    Create new                             *
+ ******************************************************************************/
+  -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="com.exoplatform.weather"
+      android:versionCode="1"
+      android:versionName="1.0">
+      
+    <application 
+        android:icon="@drawable/app_icon" 
+        android:label="@string/app_name"
+        android:screenOrientation="portrait"
+        android:debuggable="true">
+        
+        <!-- Weather information screen -->
+        <activity android:name=".controller.ActivityWeatherSetting"
+                  android:label="@string/app_name">
+                  
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <activity android:name=".controller.ActivityScreenLocation"
+          android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden|orientation">
+        </activity>         
+
+    </application>
+    <!-- For access internet resource -->
+    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+    <uses-sdk android:minSdkVersion="8" />
+
+</manifest> 
