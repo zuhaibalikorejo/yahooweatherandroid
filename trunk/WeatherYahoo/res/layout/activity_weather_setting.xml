@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/******************************************************************************
+ * Class       : activity_weather_setting.xml                                 *
+ * Weather infor screen                                                       *
+ *                                                                            *
+ * Version     : v1.0                                                         *
+ * Date        : May 06, 2011                                                 *
+ * Copyright (c)-2011 DatNQ some right reserved                               *
+ * You can distribute, modify or what ever you want but WITHOUT ANY WARRANTY  *
+ * Be honest by keep credit of this file                                      *
+ *                                                                            *
+ * If you have any concern, feel free to contact with me via email, i will    *
+ * check email in free time                                                   * 
+ * Email: nguyendatnq@gmail.com                                               *
+ * ****************************************************************************
+ * Modification Logs:                                                         *
+ *   KEYCHANGE  DATE          AUTHOR   DESCRIPTION                            *
+ * ****************************************************************************
+ *    *******   May 06, 2011  DatNQ    Create new                             *
+ ******************************************************************************/
+  -->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background">
+    
+    <!-- Weather information -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="15.0dip"
+        android:layout_centerInParent="true"
+        android:background="@drawable/weather_background">
+        
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/location_size"
+            android:textStyle="bold"
+            android:text="@string/str_no_data">
+        </TextView>        
+        
+        <!-- Weather icon -->
+        <ImageView
+            android:id="@+id/weather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/weather_hot_ic">
+        </ImageView>
+        
+        <TextView
+            android:id="@+id/temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="@dimen/temperature_size"
+            android:textColor="@color/color_white"
+            android:textStyle="bold"
+            android:text="@string/str_no_data">
+        </TextView>
+        
+        <RelativeLayout
+            android:id="@+id/OtherWeatherInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_space"
+            android:layout_marginRight="@dimen/margin_space"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_space"
+            android:background="@drawable/otherweather_ic">
+            
+            <LinearLayout
+                android:id="@+id/humidityLayout"
+                android:orientation="vertical"
+                android:layout_width="@dimen/weather_space"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true">
+                
+                <TextView
+                    android:id="@+id/humidityTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/weather_size"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/str_humidity">
+                </TextView>
+                
+                <TextView
+                    android:id="@+id/humidityValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@color/color_white"
+                    android:textStyle="bold"
+                    android:text="@string/str_no_data">
+                </TextView>                
+            </LinearLayout>
+            
+            <LinearLayout
+                android:id="@+id/visiLayout"
+                android:orientation="vertical"
+                android:layout_width="@dimen/weather_space"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true">
+                
+                <TextView
+                    android:id="@+id/visiTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/weather_size"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/str_visi">
+                </TextView>
+                
+                <TextView
+                    android:id="@+id/visiValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:textStyle="bold"
+                    android:textColor="@color/color_white"
+                    android:text="@string/str_no_data">
+                </TextView>                
+            </LinearLayout>            
+        </RelativeLayout>
+        
+        <TextView
+            android:id="@+id/dateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textStyle="bold"
+            android:textColor="@color/color_black"
+            android:text="@string/str_no_data">
+        </TextView>
+    </LinearLayout>
+
+</RelativeLayout>
