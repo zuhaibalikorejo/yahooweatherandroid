@@ -4,7 +4,7 @@
  * Class       : AndroidManifest.xml                                          *
  * Manifiest config                                                           *
  *                                                                            *
- * Version     : v1.0                                                         *
+ * Version     : v1.01                                                         *
  * Date        : May 06, 2011                                                 *
  * Copyright (c)-2011 DatNQ some right reserved                               *
  * You can distribute, modify or what ever you want but WITHOUT ANY WARRANTY  *
@@ -23,7 +23,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.exoplatform.weather"
       android:versionCode="1"
-      android:versionName="1.0">
+      android:versionName="1.01">
       
     <application 
         android:icon="@drawable/app_icon" 
