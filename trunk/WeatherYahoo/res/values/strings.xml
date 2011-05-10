@@ -72,7 +72,9 @@
     <string name="str_humidity_fmt">%s%%</string>
     <string name="str_visi_fmt">%s mi</string>
     <string name="strOnSearching">Please wait for searching...</string>
+    <string name="strOnUpdating">Please wait for updating...</string>
     <string name="strFetchingData">Please wait fetching data...</string>
     <string name="strFetchFailed">Please check, get failed :(</string>
-    <string name="strFetchSuccess">He he, get success</string>
+    <string name="strGetSuccess">Weather updated</string>
+    <string name="strUpdating">Updating weather of location</string>
 </resources>

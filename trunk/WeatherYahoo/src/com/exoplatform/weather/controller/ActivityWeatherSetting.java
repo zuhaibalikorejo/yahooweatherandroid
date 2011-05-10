@@ -28,6 +28,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,6 +64,15 @@ public class ActivityWeatherSetting extends Activity {
 	/** Change location */
 	private static final int REG_CHANGELOCATION = 1;
 	
+	/** Request get location */
+	private static final int REG_GET_WEATHER_START = 100;
+	
+	/** Request get location finish */
+	private static final int REG_GET_WEATHER_FINISH = 101;
+	
+	/** Frequency update */
+	private static final int UPDATE_FREQUENCY = 5*60*1000;
+	
 	/** Weather infomation */
 	private WeatherInfo m_WeatherInfo;
 	
@@ -88,6 +99,15 @@ public class ActivityWeatherSetting extends Activity {
 	
 	/** Icon */
 	private ImageView m_WeatherIcon;
+	
+	/** Handle request */
+	Handler m_HandleRequest;
+	
+	/** Dialog */
+	ProgressDialog m_Dialog;	
+	
+	/** Runable */
+	Runnable m_Runnable;
 	
 	
 	/***************************************************************************
@@ -227,27 +247,81 @@ public class ActivityWeatherSetting extends Activity {
      * @author DatNQ
      ***************************************************************************/
     private void updateDataOfCurrentLocation(){
-		String strMsg = getString(R.string.strFetchingData);
-		ProgressDialog m_Dialog = ProgressDialog.show(ActivityWeatherSetting.this, "",
-				strMsg, true);	
-		
-    	String strWOEID = m_Preferneces.getLocation();
-    	if (strWOEID == null){
-    		Log.e(TAG,"Can not get WOEID");
-    		m_Dialog.dismiss();
-    		displayNotifyCation(R.string.strFetchFailed);
-    		return;
-    	}
-    	
-    	/* Get weather information */
-        m_WeatherInfo = m_DataModel.getWeatherData(strWOEID);
-    	if (m_WeatherInfo != null){
-    		updateWeatherInfo(m_WeatherInfo);
-    	}
-    	
-    	m_Dialog.dismiss();
-    	displayNotifyCation(R.string.strFetchSuccess);
+    	requestUpdateWeather();
     }
+    
+    /***************************************************************************
+     * Update weather
+     * @date May 10, 2011
+     * @time 9:50:25 PM
+     * @author DatNQ
+     **************************************************************************/
+    private void requestUpdateWeather(){
+    	Message msgFetchData = new Message();
+    	msgFetchData.what = REG_GET_WEATHER_START;
+    	m_HandleRequest.sendMessage(msgFetchData);    	
+    }
+    
+	
+	/***************************************************************************
+	 * Handler request
+	 * @date May 10, 2011
+	 * @time 8:50:24 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	private void initializeHandleRequest(){
+		m_Runnable = new Runnable(){
+
+			@Override
+			public void run() {
+				requestUpdateWeather();
+			}			
+		};
+		
+		
+	    /* Setting up handler for ProgressBar */
+		m_HandleRequest = new Handler(){
+			@Override
+			public void handleMessage(Message message) {
+				int nRequest = message.what;
+				
+				switch(nRequest){
+				case REG_GET_WEATHER_START:
+					String strMsg = getString(R.string.strOnUpdating);	
+					m_Dialog = ProgressDialog.show(ActivityWeatherSetting.this, "", strMsg, true);
+					
+
+			    	String strWOEID = m_Preferneces.getLocation();
+			    	if (strWOEID == null){
+			    		Log.e(TAG,"Can not get WOEID");
+			    		m_Dialog.dismiss();
+			    		displayNotifyCation(R.string.strFetchFailed);
+			    		return;
+			    	} else {
+				    	/* Get weather information */
+				        m_WeatherInfo = m_DataModel.getWeatherData(strWOEID);			
+			    	}
+					
+					Message msgRegSearch = new Message();
+					msgRegSearch.what = REG_GET_WEATHER_FINISH;
+					sendMessage(msgRegSearch);
+					break;
+					
+				case REG_GET_WEATHER_FINISH:
+			    	if (m_WeatherInfo != null){
+			    		updateWeatherInfo(m_WeatherInfo);
+			    	}					
+					m_Dialog.dismiss();
+					m_HandleRequest.postDelayed(m_Runnable, UPDATE_FREQUENCY);
+					break;
+					 
+					 default:
+						 Log.e(TAG,"Can not handle this message");
+						 break;
+				}
+			}
+        };		
+	}    
     
     /***************************************************************************
      * Display notification
@@ -258,7 +332,7 @@ public class ActivityWeatherSetting extends Activity {
      **************************************************************************/
     private void displayNotifyCation(int nResID){
 		Toast.makeText(getApplicationContext(), getString(nResID),
-				Toast.LENGTH_SHORT).show();    	
+				Toast.LENGTH_LONG).show();    	
     }
     
     
@@ -323,6 +397,8 @@ public class ActivityWeatherSetting extends Activity {
     		return false;
     	}
 
+    	initializeHandleRequest();
+    	
     	return true;
     }    
     

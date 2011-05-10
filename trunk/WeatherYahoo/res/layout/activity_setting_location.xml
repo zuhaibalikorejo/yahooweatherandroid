@@ -29,24 +29,13 @@
 		    android:background="@layout/boder">
 		
 			<TextView
-				android:id="@+id/hintLogin"
+				android:id="@+id/hintLocation"
 				android:layout_centerHorizontal="true"
 				android:layout_width="fill_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginTop="15dip"
 				android:text="Set Weather Location"
 				android:textSize="25dip"
-				android:gravity="center_horizontal">
-			</TextView>
-				
-			<TextView
-				android:id="@+id/hintCountry"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:layout_marginLeft="15dip"
-				android:layout_marginRight="15dip"
-				android:text="Country"
-				android:textSize="15dip"
 				android:gravity="center_horizontal">
 			</TextView>
 			
@@ -57,13 +46,14 @@
 				android:layout_height="50dip"
 				android:layout_marginLeft="15dip"
 				android:layout_marginRight="15dip"
-				android:hint="Input Country"
+				android:hint="Input Location"
 				android:inputType="textVisiblePassword"
 				android:singleLine="true"
 				android:textSize="20dip"
 				android:textColor="@color/color_black">
 			</EditText>
 			
+			<!-- 
 			<TextView
 				android:id="@+id/hintCity"
 				android:layout_width="wrap_content"
@@ -87,6 +77,7 @@
 				android:textSize="20dip"
 				android:textColor="@color/color_black">
 			</EditText>	
+			 -->
 			
 			<LinearLayout
 				android:id="@+id/Search"
