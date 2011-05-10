@@ -5,6 +5,8 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,6 +37,15 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 	/** Get data failed */
 	private static final int LOCATION_GET_FAILED = 2;
 	
+	/** Request get location */
+	private static final int REG_GET_LOCATION_SATRT = 100;
+	
+	/** Request get location finish */
+	private static final int REG_GET_LOCATION_FINISH = 101;
+	
+	/** Request searching */
+	private static final int REG_GET_LOCATION_SEARCHING = 102;
+	
 	/** Search button */
 	private Button m_btnSearch;
 	
@@ -42,7 +53,7 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 	private EditText m_Country;
 	
 	/** Input city */
-	private EditText m_City;
+	//private EditText m_City;
 	
 	/** Data model */
 	private WeatherDataModel m_DataModel;
@@ -52,6 +63,12 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 	
 	/** Dialog */
 	ProgressDialog m_Dialog;
+	
+	/** Handle request */
+	Handler m_HandleRequest;
+	
+	/** Request result */
+	private int m_RequestResult = LOCATION_ERROR;
 	
 
 	/*********************************************************
@@ -90,24 +107,72 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 
 		m_btnSearch = (Button) findViewById(R.id.btnSearch);
 		m_Country = (EditText) findViewById(R.id.inputCountry);
-		m_City = (EditText) findViewById(R.id.inputCity);
+		//m_City = (EditText) findViewById(R.id.inputCity);
 
-		if ( (m_btnSearch == null) || (m_Country == null) || (m_City == null)){
+		if ( (m_btnSearch == null) || (m_Country == null)){
 			Log.e(TAG,"initialize view error");
 			bResult = false;
 		}
 		
+		/* Regist handle click */
 		m_btnSearch.setOnClickListener(this);
+
+		/* Regist handle */
+		initializeHandleRequest();
 		
 		return bResult;
 	}
-
-	/*********************************************************
-	 * Initialize data
-	 * 
-	 * @return true: initialize data success false: initialize data false
+	
+	/***************************************************************************
+	 * Handler request
+	 * @date May 10, 2011
+	 * @time 8:50:24 PM
 	 * @author DatNQ
-	 ********************************************************/
+	 **************************************************************************/
+	private void initializeHandleRequest(){
+	    /* Setting up handler for ProgressBar */
+		m_HandleRequest = new Handler(){
+			@Override
+			public void handleMessage(Message message) {
+				int nRequest = message.what;
+				
+				switch(nRequest){
+				case REG_GET_LOCATION_SATRT:
+					String strMsg = getString(R.string.strOnSearching);	
+					m_Dialog = ProgressDialog.show(ActivityScreenLocation.this, "", strMsg, true);
+					
+					Message msgRegSearch = new Message();
+					msgRegSearch.what = REG_GET_LOCATION_SEARCHING;
+					sendMessage(msgRegSearch);
+					break;
+					
+				case REG_GET_LOCATION_SEARCHING:
+					m_RequestResult = getDataByLocatition();
+					Message msgFinish = new Message();
+					msgFinish.what = REG_GET_LOCATION_FINISH;
+					sendMessage(msgFinish);					
+					break;
+					
+				case REG_GET_LOCATION_FINISH:
+					m_Dialog.dismiss();
+					getLocationFinish(m_RequestResult);
+					 break;
+					 
+					 default:
+						 Log.e(TAG,"Can not handle this message");
+						 break;
+				}
+			}
+        };		
+	}
+
+	/***************************************************************************
+	 * Initilize data
+	 * @return
+	 * @date May 10, 2011
+	 * @time 8:50:09 PM
+	 * @author DatNQ
+	 **************************************************************************/
 	private boolean initializeData() {
 		boolean bResult = true;
 		
@@ -126,21 +191,23 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 		return bResult;
 	}
 
-	/*********************************************************
-	 * Draw all element of screen
-	 * 
+	/***************************************************************************
+	 * Draw screen
+	 * @date May 10, 2011
+	 * @time 8:49:53 PM
 	 * @author DatNQ
-	 *********************************************************/
+	 **************************************************************************/
 	private void drawScreen() {
 		drawTitle();
 
 	}
 
-	/*********************************************************
-	 * Draw title of screen
-	 * 
+	/***************************************************************************
+	 * Draw title
+	 * @date May 10, 2011
+	 * @time 8:49:36 PM
 	 * @author DatNQ
-	 *********************************************************/
+	 **************************************************************************/
 	private void drawTitle() {
 	    setTitle(R.string.strSettingLocationTitle);
 	}
@@ -179,10 +246,13 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 		StringBuffer strQuerryBuf = new StringBuffer();
 		
 		strQuerryBuf.append(m_Country.getText().toString().trim());
-		strQuerryBuf.append(" ");
-		strQuerryBuf.append(m_City.getText().toString().trim());
 
-		return strQuerryBuf.toString().trim();
+		String strQuerryWOEID =  strQuerryBuf.toString().trim();
+		if (strQuerryWOEID != null){
+			strQuerryWOEID = strQuerryWOEID.replace(" ", "%20");
+		}
+		
+		return strQuerryWOEID;
 	}
 	
 	/***************************************************************************
@@ -212,11 +282,29 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 	 * @author DatNQ
 	 **************************************************************************/
 	public void onClick(View arg0) {
-		String strMsg = getString(R.string.strOnSearching);
-		m_Dialog = ProgressDialog.show(ActivityScreenLocation.this, "",
-				strMsg, true);	
-		
-		int nGetResult = getDataByLocatition();
+		/* Get woeid */
+		getWoeIDByLocation();
+	}
+	
+	/***************************************************************************
+	 * Get woeid by location
+	 * @date May 10, 2011
+	 * @time 8:52:04 PM
+	 * @author DatNQ
+	 ***************************************************************************/
+	private void getWoeIDByLocation(){
+		Message regSearchLocation = new Message();
+		regSearchLocation.what = REG_GET_LOCATION_SATRT;
+		m_HandleRequest.sendMessage(regSearchLocation);
+	}
+	
+	/***************************************************************************
+	 * Get location finish
+	 * @date May 10, 2011
+	 * @time 8:54:23 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	private void getLocationFinish(int nGetResult){
 		Intent changeResult = new Intent();
 		switch (nGetResult){
 		case LOCATION_OK:
@@ -228,10 +316,8 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 		case LOCATION_NOWOEID:
 			setResult(RESULT_CANCELED, changeResult);
 			default:
-				
 		}
-		
-		m_Dialog.dismiss();
-		finish();
+
+		finish();		
 	}
 }
