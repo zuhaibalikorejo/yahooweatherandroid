@@ -185,5 +185,23 @@ public class WeatherDataModel {
 		
 		return strRegURL;
 	}
+	
+	/***************************************************************************
+	 * Convert from C to F
+	 * @param strC
+	 * @return
+	 * @date May 12, 2011
+	 * @time 10:47:29 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	public static String convertC2F(String strC){
+		if (strC == null){
+			return "";
+		}
+		
+		int nC = Integer.parseInt(strC);
+		int nF = (nC*9)/5 + 32;
+		return Integer.toString(nF);
+	}
 	   	
 }

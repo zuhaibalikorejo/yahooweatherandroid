@@ -62,13 +62,14 @@
     
     <!-- Option menu -->
     <string name="option_menu_about">About me</string>
-    <string name="option_menu_setting">Set Location</string>
+    <string name="option_menu_setting">Setting</string>
     <string name="str_no_data">***</string>
     
     <string name="str_humidity">Humidity</string>
     <string name="str_visi">Visibility</string>
     
     <string name="str_temperature_fmt">%s°C</string>
+    <string name="str_temperature_fmt_f">%s°F</string>
     <string name="str_humidity_fmt">%s%%</string>
     <string name="str_visi_fmt">%s mi</string>
     <string name="strOnSearching">Please wait for searching...</string>
@@ -77,4 +78,16 @@
     <string name="strFetchFailed">Please check, get failed :(</string>
     <string name="strGetSuccess">Weather updated</string>
     <string name="strUpdating">Updating weather of location</string>
+    
+    <!-- For context menu -->
+    <string name="title_context_menu_setting">Yahoo Weather Setting</string>
+    <string name="defalt_menu_name">No name</string>
+    <string name="context_menu_changeLocation">Set weather Location</string>
+    <string name="temperature_unit">Temperature unit</string>
+    <string name="context_menu_update_time">AutoUpdate</string>
+    <string name="selectTemperatureUnit">Set your prefer unit</string>
+    <string name="selectTimeUpdate">Set auto-update time</string>
+    
+    
+    
 </resources>
