@@ -20,10 +20,12 @@
  ******************************************************************************/
 package com.exoplatform.weather.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,6 +45,8 @@ import com.exoplatform.weather.model.WeatherDataModel;
 import com.exoplatform.weather.model.WeatherInfo;
 import com.exoplatform.weather.model.WeatherPreferences;
 import com.exoplatform.weather.model.YahooWeatherHelper;
+import com.exoplatform.weather.view.ContextMenuAdapter;
+import com.exoplatform.weather.view.ContextMenuItem;
 
 /*******************************************************************************
  * Purpose of this class for Activity setting yahoo weather service
@@ -71,7 +75,25 @@ public class ActivityWeatherSetting extends Activity {
 	private static final int REG_GET_WEATHER_FINISH = 101;
 	
 	/** Frequency update */
-	private static final int UPDATE_FREQUENCY = 5*60*1000;
+	private static final int ONE_MINUTE = 60*1000;
+	
+	/** Context menu */
+	private static final int MENU_CONTEXT_0 = 0;	
+	
+	/** Context menu */
+	private static final int MENU_CONTEXT_1 = 1;	
+	
+	/** Context menu */
+	private static final int MENU_CONTEXT_2 = 2;
+	
+	/** Item 1 */
+	private static final int SELECT_ITEM_1 = 0;
+	
+	/** Item 2 */
+	private static final int SELECT_ITEM_2 = 1;
+	
+	/** Item 3 */
+	private static final int SELECT_ITEM_3 = 2;
 	
 	/** Weather infomation */
 	private WeatherInfo m_WeatherInfo;
@@ -104,11 +126,20 @@ public class ActivityWeatherSetting extends Activity {
 	Handler m_HandleRequest;
 	
 	/** Dialog */
-	ProgressDialog m_Dialog;	
+	//ProgressDialog m_ProgressDialog;
+	
+	/** Dialog */
+	AlertDialog m_Dialog;	
 	
 	/** Runable */
 	Runnable m_Runnable;
 	
+	/** For adapter of dialog */
+	private ContextMenuAdapter m_contextAdapter;
+	
+	/** Dialog */
+	AlertDialog m_Alert;
+
 	
 	/***************************************************************************
 	 * On create called when start weather setting activity
@@ -142,6 +173,7 @@ public class ActivityWeatherSetting extends Activity {
 		} else {
 			/* Draw screen */
 			drawWeatherScreen();
+			selectWeatherSetting();
 		}        
     }
     
@@ -208,7 +240,7 @@ public class ActivityWeatherSetting extends Activity {
     		displayCV();
     		break;
     	case R.id.menu_setting:
-    		selectSetting();
+    		selectWeatherSetting();
     		break;
     		
     		default:
@@ -287,14 +319,10 @@ public class ActivityWeatherSetting extends Activity {
 				
 				switch(nRequest){
 				case REG_GET_WEATHER_START:
-					String strMsg = getString(R.string.strOnUpdating);	
-					m_Dialog = ProgressDialog.show(ActivityWeatherSetting.this, "", strMsg, true);
-					
-
 			    	String strWOEID = m_Preferneces.getLocation();
 			    	if (strWOEID == null){
 			    		Log.e(TAG,"Can not get WOEID");
-			    		m_Dialog.dismiss();
+			    		//m_ProgressDialog.dismiss();
 			    		displayNotifyCation(R.string.strFetchFailed);
 			    		return;
 			    	} else {
@@ -310,9 +338,10 @@ public class ActivityWeatherSetting extends Activity {
 				case REG_GET_WEATHER_FINISH:
 			    	if (m_WeatherInfo != null){
 			    		updateWeatherInfo(m_WeatherInfo);
+			    		notifyUpdateTime();
 			    	}					
-					m_Dialog.dismiss();
-					m_HandleRequest.postDelayed(m_Runnable, UPDATE_FREQUENCY);
+					//m_ProgressDialog.dismiss();
+					m_HandleRequest.postDelayed(m_Runnable, (ONE_MINUTE*m_Preferneces.getTimeUpdate()));
 					break;
 					 
 					 default:
@@ -322,6 +351,17 @@ public class ActivityWeatherSetting extends Activity {
 			}
         };		
 	}    
+	
+	/***************************************************************************
+	 * Update weather
+	 * @date May 12, 2011
+	 * @time 11:12:59 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	private void notifyUpdateTime(){
+		Intent intentSettingUpdate = new Intent(WidgetWeather.UPDATE_WEATHER);
+		this.sendBroadcast(intentSettingUpdate);		
+	}
     
     /***************************************************************************
      * Display notification
@@ -346,6 +386,76 @@ public class ActivityWeatherSetting extends Activity {
 		Intent intent = new Intent(ActivityWeatherSetting.this,ActivityScreenLocation.class);
 		startActivityForResult(intent, REG_CHANGELOCATION);    	
     }
+
+    
+    private void selectTimeIntervalUpdating(){
+    	final CharSequence[] items = {"30 minutes", "3 hours", "12 hours"};
+
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setTitle(R.string.selectTimeUpdate);
+    	builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+    	    public void onClick(DialogInterface dialog, int item) {
+    	        /* Check to update setting */
+    	    	int nTime = 30;
+    	    	switch( item ){
+    	    	case SELECT_ITEM_1:
+    	    		nTime = 30;
+    	    		break;
+    	    	case SELECT_ITEM_2:
+    	    		nTime = 180;
+    	    	case SELECT_ITEM_3:
+    	    		nTime = 720;
+    	    		break;
+    	    		
+    	    		default:
+    	    			break;
+    	    	}
+    	    	
+    	    	m_Preferneces.setTimeUpdate(nTime);
+    	    	m_Alert.dismiss();
+    	    	updateWeatherInfo(m_WeatherInfo);
+    	    }
+    	});
+    	
+    	m_Alert = builder.create();  
+    	m_Alert.show();
+    }
+    
+    /***************************************************************************
+     * Select temperature format
+     * @date May 12, 2011
+     * @time 11:21:27 PM
+     * @author DatNQ
+     **************************************************************************/
+    private void selectTempFormat(){
+    	final CharSequence[] items = {"Celsius", "Fahrenheit"};
+
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setTitle(R.string.selectTemperatureUnit);
+    	builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+    	    public void onClick(DialogInterface dialog, int item) {
+    	        /* Check to update setting */
+    	    	boolean bIsC = true;
+    	    	switch( item ){
+    	    	case SELECT_ITEM_1:
+    	    		bIsC = true;
+    	    		break;
+    	    	case SELECT_ITEM_2:
+    	    		bIsC = false;
+    	    		
+    	    		default:
+    	    			break;
+    	    	}
+    	    	
+    	    	m_Preferneces.setTempFmt(bIsC);
+    	    	m_Alert.dismiss();
+    	    	notifyUpdateTime();
+    	    	updateWeatherInfo(m_WeatherInfo);
+    	    }
+    	});
+    	m_Alert = builder.create();  
+    	m_Alert.show();
+    }    
     
     /***************************************************************************
      * Initialize view
@@ -436,10 +546,18 @@ public class ActivityWeatherSetting extends Activity {
     	int nCode = getImageByCode(strCode);
     	m_WeatherIcon.setImageResource(nCode);
     	
+    	boolean bIsC = m_Preferneces.getTempFmt();
     	
-    	String strFmt = getString(R.string.str_temperature_fmt);
-    	String strTemperature = String.format(strFmt, 
-    			weatherInfo.getTemperature(WeatherInfo.TEMPERATURE_FMT_CELSIUS));
+    	String strFmt;
+    	String strTemp = weatherInfo.getTemperature(WeatherInfo.TEMPERATURE_FMT_CELSIUS);
+    	if (bIsC == true){
+    		strFmt = getString(R.string.str_temperature_fmt); 
+    	} else {
+    		strFmt = getString(R.string.str_temperature_fmt_f);
+    		strTemp = WeatherDataModel.convertC2F(strTemp);
+    	}
+    	
+    	String strTemperature = String.format(strFmt, strTemp);
     	
     	m_TextLocation.setText(weatherInfo.getCity());
     	m_Temperature.setText(strTemperature);
@@ -502,7 +620,109 @@ public class ActivityWeatherSetting extends Activity {
 			cvNguyenQuocDat.show();    	
 		}
     }
+    
+    
+	private AlertDialog createContextMenuSetting(Context context){
+		/* Crate menu list */
+		AlertDialog dialogMenu = null;
+		List<ContextMenuItem> arrMenuItem = null;
+		AlertDialog.Builder contextMenu = new AlertDialog.Builder(context);
 
+		/* Create menu item of context menu */
+		arrMenuItem = _createContextMenuList();
+		if (arrMenuItem == null){
+			Log.e(TAG,"Can note create dialog item");
+			return null;
+		}
+
+		this.m_contextAdapter = new ContextMenuAdapter(context,
+				0, arrMenuItem);
+		contextMenu.setAdapter(m_contextAdapter, new HandleSelectContextMenu());
+		contextMenu.setInverseBackgroundForced(true);
+		contextMenu.setTitle(R.string.title_context_menu_setting);
+		contextMenu.setIcon(R.drawable.ic_context_menu);
+
+		
+		dialogMenu = contextMenu.create();
+		dialogMenu.setCanceledOnTouchOutside(true);
+		
+		return dialogMenu;
+	}
+	
+	private List<ContextMenuItem> _createContextMenuList(){
+		ArrayList<ContextMenuItem> arrMenuItem = new ArrayList<ContextMenuItem>();
+
+		/* Create first menu item base on menu state */
+		ContextMenuItem itemContext1 = new ContextMenuItem(
+				MENU_CONTEXT_0,
+				R.string.context_menu_changeLocation,
+				R.drawable.location_ic);
+
+		ContextMenuItem itemContext2 = new ContextMenuItem(
+				MENU_CONTEXT_1,
+				R.string.context_menu_update_time,
+				R.drawable.update_time);
+		
+		ContextMenuItem itemContext3 = new ContextMenuItem(
+				MENU_CONTEXT_2,
+				R.string.temperature_unit,
+				R.drawable.temperature_ic);		
+		
+		/* Add context item to list */
+		arrMenuItem.add(itemContext1);
+		arrMenuItem.add(itemContext2);
+		arrMenuItem.add(itemContext3);
+		return arrMenuItem;
+	}		
+	
+	/**************************************************************************
+	 * Handle select context menu
+	 * @author DatNQ
+	 *
+	 **************************************************************************/
+	private class HandleSelectContextMenu implements 
+					android.content.DialogInterface.OnClickListener{
+		
+		/*********************************************************
+		 * Handle when select context menu item
+		 * @see android.content.DialogInterface.OnClickListener#onClick(android.content.DialogInterface, int)
+		 * @author DatNQ
+		 ********************************************************/
+		@Override
+		public void onClick(DialogInterface dialog, int which) {
+			
+			switch (which){
+			case MENU_CONTEXT_0:
+				selectSetting();
+				break;
+
+			case MENU_CONTEXT_1:
+				selectTimeIntervalUpdating();
+				break;
+				
+			case MENU_CONTEXT_2:
+				selectTempFormat();
+				break;
+				
+				default:
+					Log.e(TAG,"Invalid context menu");
+					break;
+			}
+		}
+	}	
+	
+	/***************************************************************************
+	 * Select setting
+	 * @date May 12, 2011
+	 * @time 11:26:52 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	private void selectWeatherSetting(){
+		m_Dialog = createContextMenuSetting(this);
+		if (m_Dialog != null){
+			m_Dialog.show();
+		}		
+	}
 
 }
 /*******************************************************************************

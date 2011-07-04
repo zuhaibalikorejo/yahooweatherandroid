@@ -43,6 +43,11 @@ public class WeatherPreferences {
 	/** Key for location */
 	private static final String KEY_LOCATION = "weather_location";
 	
+	/** Key for format temp */
+	private static final String KEY_TIME_UPDATE = "time_update";	
+	
+	private static final String KEY_TEMP_FMT = "temp_fmt";
+	
 	/** Default location */
 	private static final String DEFAULT_LOCATION = "1236594";
 
@@ -109,6 +114,68 @@ public class WeatherPreferences {
 
 		return preferences.getBoolean(KEY_AGREEMENT, false);
 	}
+	
+	/***************************************************************************
+	 * Set time update
+	 * @param bIsC
+	 * @date May 12, 2011
+	 * @time 11:00:28 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	public void setTimeUpdate(int nTime){
+        SharedPreferences preferences = m_Context.getSharedPreferences(
+        		WEATHER_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor settingEditor = preferences.edit();
+        settingEditor.putInt(KEY_TIME_UPDATE, nTime);
+        settingEditor.commit();		
+	}
+	
+	/***************************************************************************
+	 * Set temperature format
+	 * @return
+	 * @date May 12, 2011
+	 * @time 11:00:44 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	public int getTimeUpdate(){
+		/* Get value of setting from preference */
+		SharedPreferences preferences = m_Context.getSharedPreferences(
+				WEATHER_PREFERENCE, 
+				Context.MODE_PRIVATE);
+
+		return preferences.getInt(KEY_TIME_UPDATE, 30);
+	}	
+	
+	/***************************************************************************
+	 * Set temp fmt
+	 * @param bIsAccept
+	 * @date May 12, 2011
+	 * @time 11:20:48 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	public void setTempFmt(boolean bIsAccept){
+        SharedPreferences preferences = m_Context.getSharedPreferences(
+        		WEATHER_PREFERENCE, Context.MODE_PRIVATE);
+        SharedPreferences.Editor settingEditor = preferences.edit();
+        settingEditor.putBoolean(KEY_TEMP_FMT, bIsAccept);
+        settingEditor.commit();		
+	}
+	
+	/***************************************************************************
+	 * Get temp fmt
+	 * @return
+	 * @date May 7, 2011
+	 * @time 5:10:58 PM
+	 * @author DatNQ
+	 **************************************************************************/
+	public boolean getTempFmt(){
+		/* Get value of setting from preference */
+		SharedPreferences preferences = m_Context.getSharedPreferences(
+				WEATHER_PREFERENCE, 
+				Context.MODE_PRIVATE);
+
+		return preferences.getBoolean(KEY_TEMP_FMT, true);
+	}	
 	
 	/***************************************************************************
 	 * He he, just show CV

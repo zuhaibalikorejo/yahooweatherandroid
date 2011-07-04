@@ -64,6 +64,7 @@ public class ActivityScreenLocation extends Activity implements OnClickListener 
 	/** Dialog */
 	ProgressDialog m_Dialog;
 	
+	
 	/** Handle request */
 	Handler m_HandleRequest;
 	

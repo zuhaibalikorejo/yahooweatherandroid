@@ -26,4 +26,8 @@
     <color name="title_Color">#FFFFFFFF</color>
     <color name="color_black">#000000</color>
     <color name="color_white">#FFFFFFFF</color>
+    
+    <color name="green_focus">#70acfe01</color>
+    <color name="red_focus">#7DF42A41</color>
+    <color name="transparent">#00FFFFFF</color>    
 </resources>
